@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ball Simulation</title>
+  <link rel="stylesheet" type="text/css" href="mystyle.css" />
+</head>
+<body>
+<script>
+    window.onload = function() {
+      // Open a new window with specified dimensions
+      window.resizeTo(800, 400);
+    };
+</script>
+  <script src="ball.js"></script>
+  <script>
+    
+
+    const size = 20; // size of ball
+    const x = []; // position
+    const y = [];
+    const stepsize = 5;
+    const balls = []; // array to hold all free balls
+    let velocity_x = [];
+    let velocity_y = [];
+    let gravity = 0.001;
+
+    function randomColor() {
+      var red = Math.floor(Math.random() * 256);
+      var green = Math.floor(Math.random() * 256);
+      var blue = Math.floor(Math.random() * 256);
+      // Create the color string in the format "rgb(red, green, blue)"
+      var color = "rgb(" + red + "," + green + "," + blue + ")";
+      return color;
+    }
+
+    function checkWalls(i) {
+      if (x[i] < 0) velocity_x[i] = -velocity_x[i];
+      if (x[i] + size > 800) {
+        velocity_x[i] = -velocity_x[i];
+        x[i] = 800 - size;
+      }
+      if (y[i] + size > 400) {
+        velocity_y[i] = -velocity_y[i];
+        y[i] = 400 - size;
+      } else if (y[i] < 0) {
+        y[i] = 0;
+        velocity_y[i] = -velocity_y[i];
+      }
+    }
+
+    function update() {
+      for (let i = 0; i < balls.length; i++) {
+        x[i] += velocity_x[i];
+        velocity_y[i] += gravity;
+        y[i] += velocity_y[i];
+        checkWalls(i);
+        balls[i].style.left = x[i] + 'px';
+        balls[i].style.top = y[i] + 'px';
+      }
+      setTimeout(update, 10); // this calls update every 1/10 second
+    }
+
+    function getRandom(scale) {
+      return Math.floor(Math.random() * scale - scale / 2);
+    }
+
+    function factory(total) {
+      // check how many balls exist already and add to the array
+      let n = balls.length;
+      for (let i = 0; i < total; i++) {
+        let velx = getRandom(stepsize);
+        let vely = getRandom(stepsize);
+        makeBall(300 - size / 2, 200 - size / 2, randomColor(), velx, vely, 0);
+        makeBall(500 - size / 2, 200 - size / 2, randomColor(), -velx, -vely, 0);
+      }
+    }
+
+    setTimeout(function() {
+      factory(100);
+    }, 50);
+
+    setTimeout(function() {
+      update();
+    }, 100);
+
+    setTimeout(function() {
+      gravity = 0.001;
+    }, 10000);
+
+    setTimeout(function() {
+      gravity = 0;
+    }, 20000);
+
+    setTimeout(function() {
+      gravity = 0.001;
+    }, 10000);
+
+    setTimeout(function() {
+      gravity = 0;
+    }, 20000);
+
+  </script>
+  <div class="svg-container">
+    <svg height="100%" width="100%">
+      <!-- Background Rectangle -->
+      <rect x="0" y="0" width="800" height="400" stroke="red" fill="transparent" stroke-width="5" />
+      <!-- Add image element for background -->
+    
+    </svg>
+  </div>
+</body>
+</html>
